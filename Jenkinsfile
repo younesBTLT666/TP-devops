@@ -4,6 +4,7 @@ pipeline {
   tools {
     jdk 'JDK17'
     ant 'ANT'
+    sonarScanner 'SonarScanner'
   }
 
   stages {
