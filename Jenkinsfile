@@ -4,10 +4,10 @@ pipeline {
     tools {
         jdk 'JDK17'
         ant 'ANT'
+        sonarScanner 'SonarScanner'
     }
 
     stages {
-
         stage('Clone') {
             steps {
                 checkout scm
@@ -35,7 +35,15 @@ pipeline {
 
         stage('SonarQube') {
             steps {
-                sh 'echo "Sonar later"'
+                withSonarQubeEnv('SonarLocal') {
+                    sh """
+                      sonar-scanner \
+                      -Dsonar.projectKey=gestion-bancaire \
+                      -Dsonar.projectName="Gestion Bancaire" \
+                      -Dsonar.sources=src \
+                      -Dsonar.java.binaries=build/classes
+                    """
+                }
             }
         }
     }
