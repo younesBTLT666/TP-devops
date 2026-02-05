@@ -1,49 +1,43 @@
 pipeline {
-    agent any
+  agent any
 
-    tools {
-        jdk 'JDK17'
-        ant 'ANT'
+  tools {
+    jdk 'JDK17'
+    ant 'ANT'
+  }
+
+  stages {
+    stage('Clone') {
+      steps { checkout scm }
     }
 
-    stages {
-        stage('Clone') {
-            steps {
-                checkout scm
-            }
-        }
-
-        stage('Compile') {
-            steps {
-                sh 'ant clean'
-                sh 'ant compile'
-            }
-        }
-
-        stage('Tests') {
-            steps {
-                sh 'echo "No tests configured"'
-            }
-        }
-
-        stage('Package') {
-            steps {
-                sh 'ant jar || ant dist'
-            }
-        }
-
-        stage('SonarQube') {
-            steps {
-                withSonarQubeEnv('SonarLocal') {
-                    sh """
-                      sonar-scanner \
-                      -Dsonar.projectKey=gestion-bancaire \
-                      -Dsonar.projectName="Gestion Bancaire" \
-                      -Dsonar.sources=src \
-                      -Dsonar.java.binaries=build/classes
-                    """
-                }
-            }
-        }
+    stage('Compile') {
+      steps {
+        sh 'ant clean'
+        sh 'ant compile'
+      }
     }
+
+    stage('Tests') {
+      steps { sh 'echo "No tests configured"' }
+    }
+
+    stage('Package') {
+      steps { sh 'ant jar || ant dist' }
+    }
+
+    stage('SonarQube') {
+      steps {
+        withSonarQubeEnv('SonarLocal') {
+          sh """
+            ${tool 'SonarScanner'}/bin/sonar-scanner \
+              -Dsonar.projectKey=gestion-bancaire \
+              -Dsonar.projectName="Gestion Bancaire" \
+              -Dsonar.sources=src \
+              -Dsonar.java.binaries=build/classes
+          """
+        }
+      }
+    }
+  }
 }
