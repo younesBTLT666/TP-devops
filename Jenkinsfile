@@ -26,18 +26,20 @@ pipeline {
       steps { sh 'ant jar || ant dist' }
     }
 
-    stage('SonarQube') {
-      steps {
-        withSonarQubeEnv('SonarLocal') {
-          sh """
-            ${tool 'SonarScanner'}/bin/sonar-scanner \
-              -Dsonar.projectKey=gestion-bancaire \
-              -Dsonar.projectName="Gestion Bancaire" \
-              -Dsonar.sources=src \
-              -Dsonar.java.binaries=build/classes
-          """
-        }
-      }
+   stage('SonarQube') {
+    steps {
+    withSonarQubeEnv('SonarLocal') {
+      sh """
+        ${tool 'SonarScanner'}/bin/sonar-scanner \
+        -Dsonar.projectKey=gestion-bancaire \
+        -Dsonar.projectName="Gestion Bancaire" \
+        -Dsonar.sources=src \
+        -Dsonar.java.binaries=build/classes
+      """
+    }
+  }
+}
+
     }
   }
 }
